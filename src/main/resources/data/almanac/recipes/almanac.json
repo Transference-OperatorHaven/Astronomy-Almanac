@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "group": "almanac:almanac",
+  "group": "almanacbook:almanac",
   "key": {
     "#": {
       "item": "minecraft:paper"
@@ -18,7 +18,7 @@
     "###"
   ],
   "result": {
-    "item": "almanac:almanac"
+    "item": "almanacbook:almanac"
   },
   "show_notification": true
 }
