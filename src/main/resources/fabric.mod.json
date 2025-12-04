@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "almanac",
+	"id": "almanacbook",
 	"version": "${version}",
-	"name": "Almanac for Spyglass Astronomy",
-	"description": "Share stars, orbiting bodies and constellations in bulk using an Almanac!",
+	"name": "Almanac for Spyglass Astronomy (Fixed)",
+	"description": "Share stars, orbiting bodies and constellations in bulk using an Almanac! Updated to Not Conflict.",
 	"authors": [
 		"Acrogenous"
 	],
@@ -12,12 +12,12 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "LGPL-3.0-only",
-	"icon": "assets/almanac/icon.png",
+	"icon": "assets/almanacbook/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"ace.actually.almanac.Almanac"
-		],"client": ["ace.actually.almanac.AlmanacClient"]
+			"ace.actually.almanacbook.Almanac"
+		],"client": ["ace.actually.almanacbook.AlmanacClient"]
 	},
 	"depends": {
 		"fabricloader": ">=0.15.11",

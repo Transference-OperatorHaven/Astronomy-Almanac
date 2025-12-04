@@ -1,7 +1,7 @@
-package ace.actually.almanac.items;
+package ace.actually.almanacbook.items;
 
-import ace.actually.almanac.Almanac;
-import ace.actually.almanac.AlmanacClient;
+import ace.actually.almanacbook.Almanac;
+import ace.actually.almanacbook.AlmanacClient;
 import com.nettakrim.spyglass_astronomy.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -24,6 +24,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Base64;
 import java.util.List;
 
 public class AlmanacItem extends Item {
@@ -41,12 +42,6 @@ public class AlmanacItem extends Item {
             buf.writeNbt(compound);
             ServerPlayNetworking.send((ServerPlayerEntity) user, AlmanacClient.ASTRA_UPDATE_CLIENT_PACKET,buf);
         }
-        if(world.isClient && user.isSneaking())
-        {
-            user.sendMessage(Text.translatable("almanac.wrote.help"));
-        }
-
-
         return super.use(world, user, hand);
     }
 
@@ -58,7 +53,7 @@ public class AlmanacItem extends Item {
             NbtCompound compound = new NbtCompound();
             NbtList astra = new NbtList();
 
-            for(Star star: SpyglassAstronomyClient.stars)
+            for(final Star star: SpyglassAstronomyClient.stars)
             {
                 if(!star.isUnnamed())
                 {
@@ -66,7 +61,7 @@ public class AlmanacItem extends Item {
                 }
             }
 
-            for(OrbitingBody body: SpyglassAstronomyClient.orbitingBodies)
+            for(final OrbitingBody body: SpyglassAstronomyClient.orbitingBodies)
             {
                 if(!body.isUnnamed())
                 {
@@ -74,7 +69,7 @@ public class AlmanacItem extends Item {
                 }
             }
 
-            for(Constellation constellation: SpyglassAstronomyClient.constellations)
+            for(final Constellation constellation: SpyglassAstronomyClient.constellations)
             {
                 if(!constellation.isUnnamed())
                 {
@@ -82,7 +77,7 @@ public class AlmanacItem extends Item {
                 }
             }
             compound.put("astra",astra);
-            PacketByteBuf buf = PacketByteBufs.create();
+            final PacketByteBuf buf = PacketByteBufs.create();
             buf.writeNbt(compound);
             ClientPlayNetworking.send(Almanac.ASTRA_PACKET,buf);
 
@@ -90,32 +85,32 @@ public class AlmanacItem extends Item {
         return super.useOnBlock(context);
     }
 
-    private static String share(Constellation constellation) {
-        return "sga:c_"+(SpaceDataManager.encodeConstellation(null, constellation).replace(" | ", "|"))+"|";
+    private static String share(final Constellation constellation) {
+        return "sga:c_"+(SpaceDataManager.encodeConstellation((Base64.Encoder)null, constellation).replace(" | ", "|"))+"|";
 
     }
 
-    private static String share(Star star) {
-        String starName = (star.isUnnamed() ? "Unnamed" : star.name);
+    private static String share(final Star star) {
+        final String starName = (star.isUnnamed() ? "Unnamed" : star.name);
         return "sga:s_"+starName+"|"+ star.index +"|";
 
     }
 
-    private static String share(OrbitingBody orbitingBody) {
-        String orbitingBodyName = (orbitingBody.isUnnamed() ? "Unnamed" : orbitingBody.name);
+    private static String share(final OrbitingBody orbitingBody) {
+        final String orbitingBodyName = (orbitingBody.isUnnamed() ? "Unnamed" : orbitingBody.name);
         return "sga:p_"+orbitingBodyName+"|"+ SpyglassAstronomyClient.orbitingBodies.indexOf(orbitingBody) +"|";
 
     }
 
     private static String reprocessor(String message)
     {
-        int sgaIndex = message.indexOf("sga:");
+        final int sgaIndex = message.indexOf("sga:");
         if (sgaIndex == -1) return null;
 
         String data = message.substring(sgaIndex+4);
-        int firstIndex = data.indexOf("|");
+        final int firstIndex = data.indexOf("|");
         if (firstIndex == -1) return null;
-        int secondIndex = data.indexOf("|", firstIndex+1);
+        final int secondIndex = data.indexOf("|", firstIndex+1);
         data = data.substring(0, secondIndex == -1 ? firstIndex : secondIndex);
         if (data.charAt(1) != '_') return null;
 
@@ -124,19 +119,19 @@ public class AlmanacItem extends Item {
         switch (data.charAt(0)) {
             case 'c' -> {
                 //constellation shared with sga:c_Name|AAAA|
-                String constellationName = data.substring(2, firstIndex);
-                String constellationData = data.substring(firstIndex + 1, secondIndex);
+                final String constellationName = data.substring(2, firstIndex);
+                final String constellationData = data.substring(firstIndex + 1, secondIndex);
                 return "/sga:admin constellations add " + constellationData + " " + constellationName;
 
             }
             case 's' -> {
                 //star shared with sga:s_Name|index|
-                String starName = data.substring(2, firstIndex);
-                int starIndex;
+                final String starName = data.substring(2, firstIndex);
+                final int starIndex;
                 int index = Integer.parseInt(data.substring(firstIndex + 1, secondIndex));
                 try {
                     starIndex = index;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     break;
                 }
                 return "/sga:admin rename star " + starIndex + " " + starName;
@@ -144,12 +139,12 @@ public class AlmanacItem extends Item {
             }
             case 'p' -> {
                 //planets shared with sga:p_Name|index|
-                String orbitingBodyName = data.substring(2, firstIndex);
-                int orbitingBodyIndex;
+                final String orbitingBodyName = data.substring(2, firstIndex);
+                final int orbitingBodyIndex;
                 int index = Integer.parseInt(data.substring(firstIndex + 1, secondIndex));
                 try {
                     orbitingBodyIndex = index;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     break;
                 }
                 if (orbitingBodyIndex >= SpyglassAstronomyClient.orbitingBodies.size()) break;
@@ -163,18 +158,18 @@ public class AlmanacItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
+    public void appendTooltip(ItemStack stack, final World world, final List<Text> tooltip, final TooltipContext context) {
+        super.appendTooltip(stack, world, (List)tooltip, context);
         if(stack.hasNbt())
         {
             tooltip.add(Text.of("Version "+stack.getNbt().getInt("version")));
-            NbtList authors = (NbtList) stack.getNbt().get("authors");
+            final NbtList authors = (NbtList) stack.getNbt().get("authors");
 
-            StringBuilder v = new StringBuilder("Authors: ");
+            final StringBuilder v = new StringBuilder("Authors: ");
             for (int i = 0; i < authors.size(); i++) {
                 v.append(authors.getString(i)).append(", ");
             }
-            String pcomma = v.toString();
+            final String pcomma = v.toString();
             tooltip.add(Text.of(pcomma.substring(0,pcomma.length()-2)));
 
         }

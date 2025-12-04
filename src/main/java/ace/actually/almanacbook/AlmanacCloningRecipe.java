@@ -1,6 +1,6 @@
-package ace.actually.almanac;
+package ace.actually.almanacbook;
 
-import ace.actually.almanac.items.AlmanacItem;
+import ace.actually.almanacbook.items.AlmanacItem;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,7 +17,7 @@ import net.minecraft.world.World;
  * Literally BookCloningRecipe.
  */
 public class AlmanacCloningRecipe extends SpecialCraftingRecipe {
-    public AlmanacCloningRecipe(Identifier id, CraftingRecipeCategory category) {
+    public AlmanacCloningRecipe(final Identifier id, final CraftingRecipeCategory category) {
         super(id, category);
     }
 
@@ -26,7 +26,7 @@ public class AlmanacCloningRecipe extends SpecialCraftingRecipe {
         ItemStack itemStack = ItemStack.EMPTY;
 
         for(int j = 0; j < recipeInputInventory.size(); ++j) {
-            ItemStack itemStack2 = recipeInputInventory.getStack(j);
+            final ItemStack itemStack2 = recipeInputInventory.getStack(j);
             if (!itemStack2.isEmpty()) {
                 if (itemStack2.isOf(Almanac.ALMANAC_ITEM)) {
                     if (!itemStack.isEmpty()) {
@@ -47,12 +47,12 @@ public class AlmanacCloningRecipe extends SpecialCraftingRecipe {
         return !itemStack.isEmpty() && itemStack.hasNbt() && i > 0;
     }
 
-    public ItemStack craft(RecipeInputInventory recipeInputInventory, DynamicRegistryManager dynamicRegistryManager) {
+    public ItemStack craft(final RecipeInputInventory recipeInputInventory, final DynamicRegistryManager dynamicRegistryManager) {
         int i = 0;
         ItemStack itemStack = ItemStack.EMPTY;
 
         for(int j = 0; j < recipeInputInventory.size(); ++j) {
-            ItemStack itemStack2 = recipeInputInventory.getStack(j);
+            final ItemStack itemStack2 = recipeInputInventory.getStack(j);
             if (!itemStack2.isEmpty()) {
                 if (itemStack2.isOf(Almanac.ALMANAC_ITEM)) {
                     if (!itemStack.isEmpty()) {
@@ -71,8 +71,8 @@ public class AlmanacCloningRecipe extends SpecialCraftingRecipe {
         }
 
         if (!itemStack.isEmpty() && itemStack.hasNbt() && i >= 1) {
-            ItemStack itemStack3 = new ItemStack(Almanac.ALMANAC_ITEM, i);
-            NbtCompound nbtCompound = itemStack.getNbt().copy();
+            final ItemStack itemStack3 = new ItemStack(Almanac.ALMANAC_ITEM, i);
+            final NbtCompound nbtCompound = itemStack.getNbt().copy();
             //nbtCompound.putInt("generation", WrittenBookItem.getGeneration(itemStack) + 1);
             itemStack3.setNbt(nbtCompound);
             return itemStack3;
@@ -81,11 +81,11 @@ public class AlmanacCloningRecipe extends SpecialCraftingRecipe {
         }
     }
 
-    public DefaultedList<ItemStack> getRemainder(RecipeInputInventory recipeInputInventory) {
-        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(recipeInputInventory.size(), ItemStack.EMPTY);
+    public DefaultedList<ItemStack> getRemainder(final RecipeInputInventory recipeInputInventory) {
+        final DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(recipeInputInventory.size(), ItemStack.EMPTY);
 
         for(int i = 0; i < defaultedList.size(); ++i) {
-            ItemStack itemStack = recipeInputInventory.getStack(i);
+            final ItemStack itemStack = recipeInputInventory.getStack(i);
             if (itemStack.getItem().hasRecipeRemainder()) {
                 defaultedList.set(i, new ItemStack(itemStack.getItem().getRecipeRemainder()));
             } else if (itemStack.getItem() instanceof AlmanacItem) {
@@ -101,7 +101,7 @@ public class AlmanacCloningRecipe extends SpecialCraftingRecipe {
         return Almanac.ALMANAC_CLONING;
     }
 
-    public boolean fits(int width, int height) {
+    public boolean fits(final int width, final int height) {
         return width >= 3 && height >= 3;
     }
 }
